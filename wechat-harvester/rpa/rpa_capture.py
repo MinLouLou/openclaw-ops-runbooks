@@ -33,13 +33,22 @@ CMD_FLAG = 0x100000
 
 
 def activate_wechat():
-    # Try launching first, then activate (handles app not running)
-    subprocess.run(["open", "-a", "WeChat"], check=False)
-    time.sleep(0.8)
-    subprocess.run(["osascript", "-e", 'tell application "WeChat" to activate'], check=False)
-    # Some installations expose localized app name
-    subprocess.run(["osascript", "-e", 'tell application "微信" to activate'], check=False)
-    time.sleep(0.8)
+    # Step 1: always launch WeChat first, then wait until it's frontmost.
+    subprocess.run(["open", "-a", "/Applications/WeChat.app"], check=False)
+    time.sleep(1.0)
+
+    for _ in range(6):
+        subprocess.run(["osascript", "-e", 'tell application "WeChat" to activate'], check=False)
+        time.sleep(0.5)
+        front = subprocess.check_output([
+            "osascript",
+            "-e",
+            'tell application "System Events" to get name of first application process whose frontmost is true'
+        ]).decode("utf-8", errors="ignore").strip()
+        if "WeChat" in front or "微信" in front:
+            return
+
+    raise RuntimeError("无法将微信置前：请先手动打开 WeChat 并授予辅助功能权限")
 
 
 def move_and_click(x, y):
