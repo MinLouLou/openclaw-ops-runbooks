@@ -48,6 +48,12 @@ cp config.example.json config.json
 
 ```bash
 /usr/bin/python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --until-step 2
+
+若微信不在默认路径，可加：
+
+```bash
+/usr/bin/python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --until-step 2 --app-path "/Applications/WeChat.app"
+```
 ```
 ```
 

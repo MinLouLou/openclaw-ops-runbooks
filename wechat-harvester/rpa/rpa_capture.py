@@ -32,23 +32,34 @@ KEYCODE = {
 CMD_FLAG = 0x100000
 
 
-def activate_wechat():
-    # Step 1: always launch WeChat first, then wait until it's frontmost.
-    subprocess.run(["open", "-a", "/Applications/WeChat.app"], check=False)
-    time.sleep(1.0)
+def activate_wechat(app_path="/Applications/WeChat.app"):
+    # Step 1: launch WeChat with multiple fallbacks.
+    launch_cmds = [
+        ["open", "-a", app_path],
+        ["open", "-a", "WeChat"],
+        ["open", "-b", "com.tencent.xinWeChat"],
+    ]
+    for cmd in launch_cmds:
+        subprocess.run(cmd, check=False)
+        time.sleep(0.6)
 
-    for _ in range(6):
+    # Step 2: activate front window
+    for _ in range(8):
         subprocess.run(["osascript", "-e", 'tell application "WeChat" to activate'], check=False)
+        subprocess.run(["osascript", "-e", 'tell application "微信" to activate'], check=False)
         time.sleep(0.5)
-        front = subprocess.check_output([
-            "osascript",
-            "-e",
-            'tell application "System Events" to get name of first application process whose frontmost is true'
-        ]).decode("utf-8", errors="ignore").strip()
+        try:
+            front = subprocess.check_output([
+                "osascript",
+                "-e",
+                'tell application "System Events" to get name of first application process whose frontmost is true'
+            ]).decode("utf-8", errors="ignore").strip()
+        except Exception:
+            front = ""
         if "WeChat" in front or "微信" in front:
             return
 
-    raise RuntimeError("无法将微信置前：请先手动打开 WeChat 并授予辅助功能权限")
+    raise RuntimeError("无法自动拉起微信。请先手动打开 WeChat（保持前台）后再运行脚本。")
 
 
 def move_and_click(x, y):
@@ -109,13 +120,13 @@ def scroll(pixels: int):
     # keep simple: down key once after block; real scroll is app-specific
 
 
-def run(cfg, group, keyword, max_items, until_step=999):
+def run(cfg, group, keyword, max_items, until_step=999, app_path='/Applications/WeChat.app'):
     c = cfg['coords']
     d_click = cfg.get('click_delay_ms', 220) / 1000
     d_copy = cfg.get('copy_delay_ms', 250) / 1000
     scroll_every = int(cfg.get('scroll_every', 8))
 
-    activate_wechat()
+    activate_wechat(app_path=app_path)
 
     # 1-2) 先尝试直接点击聊天列表中的目标群（你指定固定坐标）
     if 'group_chat_item' in c:
@@ -188,6 +199,7 @@ def main():
     ap.add_argument('--keyword', default='youtube')
     ap.add_argument('--max-items', type=int, default=120)
     ap.add_argument('--until-step', type=int, default=999, help='仅执行到某一步后停止（如 2）')
+    ap.add_argument('--app-path', default='/Applications/WeChat.app', help='WeChat.app 路径')
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding='utf-8'))
@@ -196,7 +208,7 @@ def main():
     date_str = str(dt.date.today())
     raw_file = out_dir / f'rpa-raw-{date_str}.txt'
 
-    rows = run(cfg, args.group, args.keyword, args.max_items, args.until_step)
+    rows = run(cfg, args.group, args.keyword, args.max_items, args.until_step, args.app_path)
     raw_file.write_text('\n\n===== ITEM =====\n\n'.join(rows), encoding='utf-8')
 
     print(f'采集完成，条数: {len(rows)}')
