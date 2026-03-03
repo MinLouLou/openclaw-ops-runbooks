@@ -26,7 +26,7 @@ cp config.example.json config.json
 2. 运行坐标读取器：
 
 ```bash
-python3 mouse_pos.py
+/usr/bin/python3 mouse_pos.py
 ```
 
 3. 把鼠标放到对应控件上，记下坐标，填入 `config.json`（按固定路径）：
@@ -41,7 +41,7 @@ python3 mouse_pos.py
 ## 运行
 
 ```bash
-python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --keyword youtube --max-items 120
+/usr/bin/python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --keyword youtube --max-items 120
 ```
 
 输出：
