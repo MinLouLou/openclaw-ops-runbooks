@@ -119,7 +119,7 @@ def scroll(pixels: int):
     # keep simple: down key once after block; real scroll is app-specific
 
 
-def run(cfg, group, keyword, max_items, until_step=999, app_path='/Applications/WeChat.app', group_mode='search'):
+def run(cfg, group, keyword, max_items, until_step=999, app_path='/Applications/WeChat.app', group_mode='search', search_focus_mode='cmdf'):
     c = cfg['coords']
     d_click = cfg.get('click_delay_ms', 220) / 1000
     d_copy = cfg.get('copy_delay_ms', 250) / 1000
@@ -133,12 +133,15 @@ def run(cfg, group, keyword, max_items, until_step=999, app_path='/Applications/
         move_and_click(*c['group_chat_item'])
         time.sleep(0.8)
     else:
-        # Safer than mouse-clicking unknown area: use Cmd+F to focus search.
-        key_tap('f', cmd=True)
+        # Focus search input: cmd+f or click configured search box.
+        if search_focus_mode == 'click' and 'chat_search_box' in c:
+            move_and_click(*c['chat_search_box'])
+        else:
+            key_tap('f', cmd=True)
         time.sleep(d_click)
         select_all_and_paste(group)
         time.sleep(d_click)
-        # Prefer keyboard enter to open first matched chat (avoid mini-program area click).
+        # Open first matched chat by keyboard (avoid mini-program area click).
         key_tap('return')
         time.sleep(0.9)
 
@@ -198,6 +201,7 @@ def main():
     ap.add_argument('--until-step', type=int, default=999, help='仅执行到某一步后停止（如 2）')
     ap.add_argument('--app-path', default='/Applications/WeChat.app', help='WeChat.app 路径')
     ap.add_argument('--group-mode', choices=['search','direct'], default='search', help='进群方式：search=先搜群名，direct=直接点群坐标')
+    ap.add_argument('--search-focus-mode', choices=['cmdf','click'], default='cmdf', help='search模式下聚焦输入框方式')
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding='utf-8'))
@@ -206,7 +210,7 @@ def main():
     date_str = str(dt.date.today())
     raw_file = out_dir / f'rpa-raw-{date_str}.txt'
 
-    rows = run(cfg, args.group, args.keyword, args.max_items, args.until_step, args.app_path, args.group_mode)
+    rows = run(cfg, args.group, args.keyword, args.max_items, args.until_step, args.app_path, args.group_mode, args.search_focus_mode)
     raw_file.write_text('\n\n===== ITEM =====\n\n'.join(rows), encoding='utf-8')
 
     print(f'采集完成，条数: {len(rows)}')
