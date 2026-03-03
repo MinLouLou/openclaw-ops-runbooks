@@ -5,6 +5,7 @@
   "scroll_pixels": -320,
   "coords": {
     "chat_search_box": [180, 90],
+    "group_chat_item": [260, 220],
     "chat_result_first_item": [220, 170],
     "top_right_more_btn": [1335, 80],
     "find_chat_content_btn": [1210, 230],

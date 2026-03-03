@@ -117,19 +117,22 @@ def run(cfg, group, keyword, max_items):
 
     activate_wechat()
 
-    # 1) 点开微信（activate）后，搜群名
-    move_and_click(*c['chat_search_box'])
-    time.sleep(d_click)
-    select_all_and_paste(group)
-    time.sleep(d_click)
-
-    # 2) 点击群搜索结果第一条进入群
-    if 'chat_result_first_item' in c:
-        move_and_click(*c['chat_result_first_item'])
+    # 1-2) 先尝试直接点击聊天列表中的目标群（你指定固定坐标）
+    if 'group_chat_item' in c:
+        move_and_click(*c['group_chat_item'])
         time.sleep(0.8)
     else:
-        key_tap('return')
-        time.sleep(0.8)
+        # fallback: 搜群名 -> 点第一条结果
+        move_and_click(*c['chat_search_box'])
+        time.sleep(d_click)
+        select_all_and_paste(group)
+        time.sleep(d_click)
+        if 'chat_result_first_item' in c:
+            move_and_click(*c['chat_result_first_item'])
+            time.sleep(0.8)
+        else:
+            key_tap('return')
+            time.sleep(0.8)
 
     # 3) 点击右上角三个点
     if 'top_right_more_btn' in c:

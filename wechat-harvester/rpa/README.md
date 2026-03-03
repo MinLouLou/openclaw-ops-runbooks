@@ -31,7 +31,8 @@ cp config.example.json config.json
 
 3. 把鼠标放到对应控件上，记下坐标，填入 `config.json`（按固定路径）：
    - `chat_search_box`：微信主界面搜索框（用于搜群名）
-   - `chat_result_first_item`：群搜索结果第一条（点击进入【深海圈】群）
+   - `group_chat_item`：聊天列表里目标群的位置（优先点击这个，跳过“搜群名”）
+   - `chat_result_first_item`：群搜索结果第一条（作为兜底）
    - `top_right_more_btn`：群聊天窗口右上角三个点
    - `find_chat_content_btn`：菜单里的“查找聊天内容”
    - `inchat_search_box`：查找聊天内容的输入框（输入 youtube）
