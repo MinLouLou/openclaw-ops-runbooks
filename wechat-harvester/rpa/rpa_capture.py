@@ -33,8 +33,13 @@ CMD_FLAG = 0x100000
 
 
 def activate_wechat():
+    # Try launching first, then activate (handles app not running)
+    subprocess.run(["open", "-a", "WeChat"], check=False)
+    time.sleep(0.8)
     subprocess.run(["osascript", "-e", 'tell application "WeChat" to activate'], check=False)
-    time.sleep(0.5)
+    # Some installations expose localized app name
+    subprocess.run(["osascript", "-e", 'tell application "微信" to activate'], check=False)
+    time.sleep(0.8)
 
 
 def move_and_click(x, y):
