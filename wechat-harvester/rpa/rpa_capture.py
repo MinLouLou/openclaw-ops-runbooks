@@ -46,7 +46,6 @@ def activate_wechat(app_path="/Applications/WeChat.app"):
     # Step 2: activate front window
     for _ in range(8):
         subprocess.run(["osascript", "-e", 'tell application "WeChat" to activate'], check=False)
-        subprocess.run(["osascript", "-e", 'tell application "微信" to activate'], check=False)
         time.sleep(0.5)
         try:
             front = subprocess.check_output([
