@@ -29,9 +29,12 @@ cp config.example.json config.json
 python3 mouse_pos.py
 ```
 
-3. 把鼠标放到对应控件上，记下坐标，填入 `config.json`：
+3. 把鼠标放到对应控件上，记下坐标，填入 `config.json`（按固定路径）：
    - `chat_search_box`：微信主界面搜索框（用于搜群名）
-   - `inchat_search_box`：进入群后的聊天内搜索框（用于搜 youtube）
+   - `chat_result_first_item`：群搜索结果第一条（点击进入【深海圈】群）
+   - `top_right_more_btn`：群聊天窗口右上角三个点
+   - `find_chat_content_btn`：菜单里的“查找聊天内容”
+   - `inchat_search_box`：查找聊天内容的输入框（输入 youtube）
    - `result_first_item`：搜索结果第一条
    - `result_next_item`：下一条（用于计算行距）
 

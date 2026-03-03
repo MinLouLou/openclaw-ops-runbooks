@@ -102,15 +102,31 @@ def run(cfg, group, keyword, max_items):
 
     activate_wechat()
 
-    # 1) 搜群
+    # 1) 点开微信（activate）后，搜群名
     move_and_click(*c['chat_search_box'])
     time.sleep(d_click)
     select_all_and_paste(group)
     time.sleep(d_click)
-    key_tap('return')
-    time.sleep(0.8)
 
-    # 2) 聊天内搜 keyword
+    # 2) 点击群搜索结果第一条进入群
+    if 'chat_result_first_item' in c:
+        move_and_click(*c['chat_result_first_item'])
+        time.sleep(0.8)
+    else:
+        key_tap('return')
+        time.sleep(0.8)
+
+    # 3) 点击右上角三个点
+    if 'top_right_more_btn' in c:
+        move_and_click(*c['top_right_more_btn'])
+        time.sleep(d_click)
+
+    # 4) 点击“查找聊天内容”
+    if 'find_chat_content_btn' in c:
+        move_and_click(*c['find_chat_content_btn'])
+        time.sleep(0.6)
+
+    # 5) 在聊天搜索框输入 keyword
     move_and_click(*c['inchat_search_box'])
     time.sleep(d_click)
     select_all_and_paste(keyword)

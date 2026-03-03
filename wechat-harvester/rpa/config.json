@@ -1,13 +1,10 @@
 {
-  "click_delay_ms": 260,
-  "copy_delay_ms": 320,
+  "click_delay_ms": 220,
+  "copy_delay_ms": 250,
   "scroll_every": 8,
   "scroll_pixels": -320,
   "coords": {
     "chat_search_box": [180, 90],
-    "chat_result_first_item": [220, 170],
-    "top_right_more_btn": [1335, 80],
-    "find_chat_content_btn": [1210, 230],
     "inchat_search_box": [1120, 90],
     "result_first_item": [1110, 190],
     "result_next_item": [1110, 250]
