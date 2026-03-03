@@ -133,16 +133,14 @@ def run(cfg, group, keyword, max_items, until_step=999, app_path='/Applications/
         move_and_click(*c['group_chat_item'])
         time.sleep(0.8)
     else:
-        move_and_click(*c['chat_search_box'])
+        # Safer than mouse-clicking unknown area: use Cmd+F to focus search.
+        key_tap('f', cmd=True)
         time.sleep(d_click)
         select_all_and_paste(group)
         time.sleep(d_click)
-        if 'chat_result_first_item' in c:
-            move_and_click(*c['chat_result_first_item'])
-            time.sleep(0.8)
-        else:
-            key_tap('return')
-            time.sleep(0.8)
+        # Prefer keyboard enter to open first matched chat (avoid mini-program area click).
+        key_tap('return')
+        time.sleep(0.9)
 
     if until_step <= 2:
         return []
