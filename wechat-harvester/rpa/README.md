@@ -43,6 +43,12 @@ cp config.example.json config.json
 
 ```bash
 /usr/bin/python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --keyword youtube --max-items 120
+
+仅验证前两步（打开微信+进入群）：
+
+```bash
+/usr/bin/python3 rpa_capture.py --config config.json --group "【深海圈】风向标小组" --until-step 2
+```
 ```
 
 输出：

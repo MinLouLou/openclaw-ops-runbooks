@@ -109,7 +109,7 @@ def scroll(pixels: int):
     # keep simple: down key once after block; real scroll is app-specific
 
 
-def run(cfg, group, keyword, max_items):
+def run(cfg, group, keyword, max_items, until_step=999):
     c = cfg['coords']
     d_click = cfg.get('click_delay_ms', 220) / 1000
     d_copy = cfg.get('copy_delay_ms', 250) / 1000
@@ -133,6 +133,9 @@ def run(cfg, group, keyword, max_items):
         else:
             key_tap('return')
             time.sleep(0.8)
+
+    if until_step <= 2:
+        return []
 
     # 3) 点击右上角三个点
     if 'top_right_more_btn' in c:
@@ -184,6 +187,7 @@ def main():
     ap.add_argument('--group', required=True)
     ap.add_argument('--keyword', default='youtube')
     ap.add_argument('--max-items', type=int, default=120)
+    ap.add_argument('--until-step', type=int, default=999, help='仅执行到某一步后停止（如 2）')
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding='utf-8'))
@@ -192,7 +196,7 @@ def main():
     date_str = str(dt.date.today())
     raw_file = out_dir / f'rpa-raw-{date_str}.txt'
 
-    rows = run(cfg, args.group, args.keyword, args.max_items)
+    rows = run(cfg, args.group, args.keyword, args.max_items, args.until_step)
     raw_file.write_text('\n\n===== ITEM =====\n\n'.join(rows), encoding='utf-8')
 
     print(f'采集完成，条数: {len(rows)}')
