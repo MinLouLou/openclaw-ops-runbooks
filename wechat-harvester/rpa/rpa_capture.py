@@ -12,6 +12,7 @@ from Quartz.CoreGraphics import (
     CGEventCreateKeyboardEvent,
     CGEventPost,
     CGEventSetIntegerValueField,
+    CGEventSetFlags,
     kCGEventLeftMouseDown,
     kCGEventLeftMouseUp,
     kCGEventMouseMoved,
@@ -51,8 +52,8 @@ def key_tap(key, cmd=False):
     down = CGEventCreateKeyboardEvent(None, code, True)
     up = CGEventCreateKeyboardEvent(None, code, False)
     if cmd:
-        down.setFlags_(CMD_FLAG)
-        up.setFlags_(CMD_FLAG)
+        CGEventSetFlags(down, CMD_FLAG)
+        CGEventSetFlags(up, CMD_FLAG)
     CGEventSetIntegerValueField(down, kCGKeyboardEventAutorepeat, 0)
     CGEventSetIntegerValueField(up, kCGKeyboardEventAutorepeat, 0)
     CGEventPost(kCGHIDEventTap, down)
