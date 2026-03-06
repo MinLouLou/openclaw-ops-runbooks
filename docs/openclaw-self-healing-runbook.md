@@ -175,8 +175,69 @@ systemctl --user status openclaw-healthcheck.timer --no-pager -l
 
 ---
 
-## 7. 版本记录
+## 7. 配对与权限（避免“access not configured”）
 
-- 文档版本：v1.0
+当日志或聊天里出现：
+
+- `OpenClaw: access not configured`
+- `Pairing code: XXXXXXXX`
+
+处理方式：
+
+```bash
+openclaw pairing approve feishu <PAIRING_CODE>
+```
+
+示例：
+
+```bash
+openclaw pairing approve feishu T9W9V9L5
+```
+
+建议策略：
+- DM 保持 pairing 模式（安全）
+- 关键协作者提前完成配对
+- 群聊使用 allowlist 控制触发人范围
+
+---
+
+## 8. 事故复盘模板（可直接复用）
+
+- **故障现象**：机器人不回复/偶发回复后再次掉线
+- **直接原因**：`openclaw-gateway` OOM（`FATAL ERROR: Reached heap limit`）
+- **伴随问题**：未配对用户触发 `access not configured`
+- **修复动作**：
+  1. 升级 OpenClaw 到 2026.3.2
+  2. 增加 `NODE_OPTIONS=--max-old-space-size=3072`
+  3. 配置 systemd timer 自愈
+  4. 审批配对码恢复授权
+- **验收结果**：timer `active (waiting)` 且 `Trigger` 正常；healthcheck 输出 `[ok] healthy`
+
+---
+
+## 9. 发布到 GitHub 的建议结构
+
+```text
+openclaw-ops-runbooks/
+├── README.md
+├── docs/
+│   └── openclaw-self-healing-runbook.md
+├── scripts/
+│   └── (可选) openclaw-healthcheck.sh
+└── incidents/
+    └── (可选) 2026-03-06-gateway-oom.md
+```
+
+建议：
+- README 放“为什么、怎么用、去哪看”
+- docs 放完整 runbook
+- incidents 单独记录每次故障复盘
+
+---
+
+## 10. 版本记录
+
+- 文档版本：v1.1
 - 适配 OpenClaw：2026.3.2+
+- 更新内容：补充 pairing 处理、事故复盘模板、GitHub 目录建议
 - 场景复盘：OOM + pairing 未放行导致“看似在线但不回复”
